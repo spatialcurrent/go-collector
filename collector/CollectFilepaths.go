@@ -1,21 +1,17 @@
 package collector
 
 import (
-  "errors"
-  "log"
   "path"
   "strings"
   "os"
 )
 
 import (
-  "github.com/ttacon/chalk"
   "github.com/mitchellh/go-homedir"
+  "github.com/pkg/errors"
 )
 
 func CollectFilepaths(basepath string, extensions []string, recursive bool, paths []string) ([]string, error) {
-
-  log.Println(chalk.Green, "Collecting filepaths from ", basepath, ".", chalk.Reset)
 
   basepath_expanded, err := homedir.Expand(basepath)
   if err != nil {
@@ -55,6 +51,8 @@ func CollectFilepaths(basepath string, extensions []string, recursive bool, path
       if valid {
         if basepath == "" || basepath == "/" {
           paths = append(paths, f.Name())
+        } else if strings.HasSuffix(basepath, "/") {
+          paths = append(paths, basepath+f.Name())
         } else {
           paths = append(paths, basepath+"/"+f.Name())
         }

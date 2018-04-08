@@ -20,6 +20,15 @@ func CollectFilepaths(basepath string, extensions []string, recursive bool, path
     basepath = basepath_expanded
   }
 
+  fi, err := os.Stat(basepath_expanded)
+  if err != nil {
+    return nil, errors.New("Error: Could not stat directory at " + basepath + ".")
+  }
+  switch mode := fi.Mode(); {
+  case mode.IsRegular():
+    return nil, errors.New("Error: File at path " + basepath + ".  Need directory.")
+  }
+
   cwd, err := os.Open(basepath)
   if err != nil {
     return nil, errors.New("Error: Could not open directory at " + basepath + ".")
